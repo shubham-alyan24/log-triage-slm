@@ -8,6 +8,7 @@ Then:
     POST /triage   {"log": "<one raw log line>"}  ->  the structured record
     GET  /health                                    ->  is Ollama up, is the model there?
     GET  /docs                                      ->  a test page in your browser
+    GET  /                                          ->  sends the browser to /docs
 
 It sends EXACTLY what the scoring runs sent: the same prompt (config.build_prompt),
 the same settings (run_ollama.OPTIONS), and it reads the answer with the same
@@ -21,6 +22,7 @@ import os
 
 import httpx
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
 import config as C
@@ -52,6 +54,12 @@ def schema_ok(o) -> bool:
 
 def ms(ns):
     return round(ns / 1e6, 1) if isinstance(ns, (int, float)) else None
+
+
+@app.get("/", include_in_schema=False)
+async def home():
+    """Opening the bare address in a browser goes straight to the test page."""
+    return RedirectResponse("/docs")
 
 
 @app.get("/health")
