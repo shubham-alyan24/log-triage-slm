@@ -158,10 +158,12 @@ def main():
             ax.spines[side].set_visible(False)
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper right", ncol=2, frameon=False, fontsize=8.5)
-    fig.text(0.01, 0.015, f"{rows[0]['lines']} eval lines (every second one), Ollama 0.34.2 with OLLAMA_NUM_PARALLEL=4, "
-             "Core i5-13500H laptop, CPU only. Each request is sent when the previous one from the same "
-             "'user' has finished.", fontsize=7.5, color=INK2)
-    fig.tight_layout(rect=(0, 0.05, 1, 0.94))
+    # caption on two lines: on one line it ran off the right edge of the picture
+    fig.text(0.01, 0.045, f"{rows[0]['lines']} eval lines (every second one), Ollama 0.34.2 with OLLAMA_NUM_PARALLEL=4, "
+             "Core i5-13500H laptop, CPU only.", fontsize=7.5, color=INK2)
+    fig.text(0.01, 0.012, "Each request is sent when the previous one from the same 'user' has finished.",
+             fontsize=7.5, color=INK2)
+    fig.tight_layout(rect=(0, 0.08, 1, 0.94))
     fig.savefig(R / "week7_load.png", dpi=200, facecolor="white")
 
     # ---- markdown
