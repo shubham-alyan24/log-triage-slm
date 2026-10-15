@@ -15,7 +15,7 @@ the same settings (run_ollama.OPTIONS), and it reads the answer with the same
 parser (score.parse). So the API answers the way the scored model answered.
 
 Optional settings (environment variables):
-    OLLAMA_URL   where Ollama is      default http://localhost:11434
+    OLLAMA_URL   where Ollama is      default http://127.0.0.1:11434
     MODEL        which Ollama model   default smollm3-ft-q5km  (the Week 4 sweet spot)
 """
 import os
@@ -29,7 +29,10 @@ import config as C
 from run_ollama import OPTIONS
 from score import CAT_FIELDS, parse
 
-OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip("/")
+# 127.0.0.1, NOT localhost: on Windows "localhost" is tried as IPv6 (::1) first, Ollama only listens
+# on 127.0.0.1, and Windows retries the refused connection for ~2 s per request (found in Week 6).
+# Docker is not affected: docker-compose.yml sets OLLAMA_URL=http://ollama:11434.
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/")
 MODEL = os.environ.get("MODEL", "smollm3-ft-q5km")
 MAX_LOG_CHARS = 2000   # the prompt must fit in the 2048-token context with room for the answer
 
