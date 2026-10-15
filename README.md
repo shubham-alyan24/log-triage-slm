@@ -20,7 +20,7 @@ Shubham Alyan, B.Tech Computer Engineering, NIT Kurukshetra.
 
 ## Where it stands
 
-Done: the dataset, the frozen evaluation set, the untuned baseline, the fine-tune, the quantisation sweep (five levels, all scored on the frozen set), the serving layer (a FastAPI service in front of Ollama, also packaged with Docker), speed and memory benchmarks for every level, a load test, and the accuracy-against-cost figure. The weights for all five levels are uploaded to Hugging Face; that repository goes public with the final results.
+Done: the dataset, the frozen evaluation set, the untuned baseline, the fine-tune, the quantisation sweep (five levels, all scored on the frozen set), the serving layer (a FastAPI service in front of Ollama, also packaged with Docker), speed and memory benchmarks for every level, a load test, and the accuracy-against-cost figure. The weights for all five levels and the LoRA adapter are public on Hugging Face: [shubham-alyan24/SmolLM3-3B-logtriage-GGUF](https://huggingface.co/shubham-alyan24/SmolLM3-3B-logtriage-GGUF).
 
 Next: the written report.
 
@@ -167,7 +167,7 @@ requirements-serve.txt                           what the API needs, nothing els
 
 ## Running it
 
-Put the GGUF files in `models/` and import a level into Ollama, for example Q5_K_M:
+Download the GGUF files from [Hugging Face](https://huggingface.co/shubham-alyan24/SmolLM3-3B-logtriage-GGUF) into `models/` and import a level into Ollama, for example Q5_K_M:
 
 ```
 ollama create smollm3-ft-q5km -f models/Modelfile.q5km
