@@ -5,10 +5,10 @@ Start it (Ollama must be running):
     uvicorn serve:app --app-dir src --port 8000
 
 Then:
+    GET  /                                          ->  the triage page: paste a log line, see the record
     POST /triage   {"log": "<one raw log line>"}  ->  the structured record
     GET  /health                                    ->  is Ollama up, is the model there?
-    GET  /docs                                      ->  a test page in your browser
-    GET  /                                          ->  sends the browser to /docs
+    GET  /docs                                      ->  the raw API test page
 
 It sends EXACTLY what the scoring runs sent: the same prompt (config.build_prompt),
 the same settings (run_ollama.OPTIONS), and it reads the answer with the same
@@ -19,10 +19,11 @@ Optional settings (environment variables):
     MODEL        which Ollama model   default smollm3-ft-q5km  (the Week 4 sweet spot)
 """
 import os
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 import config as C
@@ -35,6 +36,7 @@ from score import CAT_FIELDS, parse
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/")
 MODEL = os.environ.get("MODEL", "smollm3-ft-q5km")
 MAX_LOG_CHARS = 2000   # the prompt must fit in the 2048-token context with room for the answer
+UI_FILE = Path(__file__).with_name("ui.html")   # the page; it only calls /triage and /health
 
 app = FastAPI(title="Log-Triage SLM", version="1.0",
               description="Turns one raw log line into a structured triage record.")
@@ -61,8 +63,10 @@ def ms(ns):
 
 @app.get("/", include_in_schema=False)
 async def home():
-    """Opening the bare address in a browser goes straight to the test page."""
-    return RedirectResponse("/docs")
+    """The triage page (src/ui.html). It is read on every request, so it never goes stale."""
+    if not UI_FILE.is_file():
+        raise HTTPException(500, "ui.html is missing: it must be in the same folder as serve.py.")
+    return HTMLResponse(UI_FILE.read_text(encoding="utf-8"))
 
 
 @app.get("/health")

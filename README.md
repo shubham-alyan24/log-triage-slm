@@ -20,7 +20,7 @@ Shubham Alyan, B.Tech Computer Engineering, NIT Kurukshetra.
 
 ## Where it stands
 
-Done: the dataset, the frozen evaluation set, the untuned baseline, the fine-tune, the quantisation sweep (five levels, all scored on the frozen set), the serving layer (a FastAPI service in front of Ollama, also packaged with Docker), speed and memory benchmarks for every level, a load test, and the accuracy-against-cost figure. The weights for all five levels and the LoRA adapter are public on Hugging Face: [shubham-alyan24/SmolLM3-3B-logtriage-GGUF](https://huggingface.co/shubham-alyan24/SmolLM3-3B-logtriage-GGUF).
+Done: the dataset, the frozen evaluation set, the untuned baseline, the fine-tune, the quantisation sweep (five levels, all scored on the frozen set), the serving layer (a FastAPI service with a small web page, in front of Ollama, also packaged with Docker), speed and memory benchmarks for every level, a load test, and the accuracy-against-cost figure. The weights for all five levels and the LoRA adapter are public on Hugging Face: [shubham-alyan24/SmolLM3-3B-logtriage-GGUF](https://huggingface.co/shubham-alyan24/SmolLM3-3B-logtriage-GGUF).
 
 Next: the written report.
 
@@ -153,7 +153,7 @@ The API (`src/serve.py`) sends exactly the prompt, settings and parser that scor
 
 ```
 src/                   dataset builder, teacher labelling, splitting, freezing, training-set builder,
-                       runner (run_ollama.py), scorer (score.py), API (serve.py),
+                       runner (run_ollama.py), scorer (score.py), API (serve.py) and its page (ui.html),
                        benchmark (bench.py), load test (loadtest.py),
                        tables and figures (week6_table.py, week7_figure.py, week7_load_table.py)
 notebooks/             Kaggle notebooks: fine-tuning, quantisation, Hugging Face upload
@@ -180,16 +180,18 @@ python src/run_ollama.py --model smollm3-ft-q5km --tag ft_q5km
 python src/score.py results/preds_eval_ft_q5km.jsonl
 ```
 
-Run the API (Ollama must be running), then open http://127.0.0.1:8000/docs:
+Run the API (Ollama must be running), then open http://127.0.0.1:8000 for the triage page:
 
 ```
 pip install -r requirements-serve.txt
 uvicorn serve:app --app-dir src --port 8000
 ```
 
+The page has a box for one log line, five example lines, and shows the recommended action, severity, service, identifiers and the model's raw output. It only calls the API below, so it shows exactly what the API returns. The raw API and its test page are at http://127.0.0.1:8000/docs.
+
 `POST /triage` takes `{"log": "<one log line>"}` and returns the structured record, the model's raw output and its timings. `GET /health` reports the Ollama version and whether the model is loaded. The model can be changed with the `MODEL` environment variable. The API talks to Ollama at `127.0.0.1` rather than `localhost`: on Windows, `localhost` is tried as IPv6 first, Ollama only listens on IPv4, and the failed attempt costs about 2 seconds per request.
 
-Or run everything in Docker (Ollama 0.34.2 and the API), then open http://localhost:8080:
+Or run everything in Docker (Ollama 0.34.2, the API and the page), then open http://localhost:8080:
 
 ```
 docker compose up -d --build

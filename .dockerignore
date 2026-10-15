@@ -6,3 +6,4 @@
 !src/run_ollama.py
 !src/score.py
 !src/serve.py
+!src/ui.html

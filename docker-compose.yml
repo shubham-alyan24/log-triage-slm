@@ -1,6 +1,6 @@
 # Log-triage API in Docker: Ollama 0.34.2 + the FastAPI app.
 #   docker compose up -d --build      start both
-#   http://localhost:8080/docs        try it in the browser
+#   http://localhost:8080             the triage page (raw API test page: /docs)
 #   docker compose down               stop both
 # For demonstration only: all reported numbers come from the native Windows setup.
 name: log-triage

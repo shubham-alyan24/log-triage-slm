@@ -5,8 +5,8 @@ WORKDIR /app
 COPY requirements-serve.txt .
 RUN pip install --no-cache-dir -r requirements-serve.txt
 
-# only the four files the API needs: prompt + settings + parser + the API itself
-COPY src/config.py src/run_ollama.py src/score.py src/serve.py src/
+# only the five files the API needs: prompt + settings + parser + the API itself + its page
+COPY src/config.py src/run_ollama.py src/score.py src/serve.py src/ui.html src/
 
 # don't run as the all-powerful root user inside the container
 RUN useradd --create-home appuser
