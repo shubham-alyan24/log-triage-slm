@@ -233,8 +233,6 @@ The action labels come from a teacher model, and the evaluation labels were revi
 
 The speed numbers are for a model that is already loaded, with Ollama re-using the shared start of the prompt, as it does by default. Threads were left at llama.cpp's automatic choice and not tuned. Peak RAM includes a growth of about 0.34 GB during each run whose cause was not confirmed. Only Q4_K_M and Q5_K_M were load-tested, on half of the evaluation set, and under load the answers are not bit-for-bit repeatable.
 
-## Next
-
-The written report.
+## Next 
 
 Beyond the project itself, a few things would make the result stronger. Training on more log sources would show whether accuracy on unseen formats actually improves instead of only being measured. Having an expert relabel a sample of the actions would show how far the teacher model's labels sit from real judgement. And comparing against something cheap and non-neural, like nearest-neighbour pattern matching, would show how much the language model is really adding.
